@@ -2,9 +2,11 @@ name: Update UK Sanctions Website List
 
 on:
   schedule:
+    # Run every day at 04:17 UK time
     - cron: "17 4 * * *"
       timezone: "Europe/London"
 
+  # Allow manual execution from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -38,20 +40,33 @@ jobs:
         run: |
           python scripts/update.py
 
-      - name: Show changes
+      # git diff does not show untracked files, so use git status here.
+      # This means the first run will correctly detect the newly generated
+      # urls.txt, domains.txt, mappings.csv and invalid.txt files.
+      - name: Show generated file status
         run: |
-          git diff --stat
-          git diff -- urls.txt domains.txt mappings.csv invalid.txt
+          echo "Generated file status:"
+          git status --short -- urls.txt domains.txt mappings.csv invalid.txt
 
+          echo ""
+          echo "Changes to already tracked files:"
+          git diff --stat -- urls.txt domains.txt mappings.csv invalid.txt
+
+      # Detect BOTH:
+      #   - changes to existing tracked files
+      #   - newly generated/untracked files
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet -- urls.txt domains.txt mappings.csv invalid.txt; then
+          if [ -z "$(git status --porcelain -- urls.txt domains.txt mappings.csv invalid.txt)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No sanctions website changes detected."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "Sanctions website changes detected."
+
+            echo ""
+            git status --short -- urls.txt domains.txt mappings.csv invalid.txt
           fi
 
       - name: Commit updated lists
@@ -62,7 +77,11 @@ jobs:
 
           git add urls.txt domains.txt mappings.csv invalid.txt
 
-          git commit \
-            -m "Update UK sanctions website lists"
+          git commit -m "Update UK sanctions website lists"
 
           git push
+
+      - name: No changes
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "UK sanctions website lists are already up to date."
