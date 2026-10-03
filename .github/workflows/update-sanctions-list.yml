@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   update:
-    name: Update sanctions website feeds
+    name: Update sanctions website feed
     runs-on: ubuntu-latest
 
     steps:
@@ -29,12 +29,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-          cache: "pip"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
 
       - name: Generate sanctions website list
         run: |
@@ -49,7 +43,6 @@ jobs:
           echo "Changes to already tracked files:"
           git diff --stat -- urls.txt invalid.txt
 
-      # Detect both changes to existing files and newly generated files
       - name: Check for changes
         id: changes
         run: |
@@ -71,9 +64,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add urls.txt invalid.txt
-
           git commit -m "Update UK sanctions website list"
-
           git push
 
       - name: No changes
