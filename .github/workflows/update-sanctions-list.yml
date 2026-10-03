@@ -2,7 +2,7 @@ name: Update UK Sanctions Website List
 
 on:
   schedule:
-    # Run every day at 04:17 UK time
+    # Run every day at 09:00 UK time
     - cron: "0 9 * * *"
       timezone: "Europe/London"
 
@@ -36,29 +36,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate sanctions website lists
+      - name: Generate sanctions website list
         run: |
           python scripts/update.py
 
-      # git diff does not show untracked files, so use git status here.
-      # This means the first run will correctly detect the newly generated
-      # urls.txt, domains.txt, mappings.csv and invalid.txt files.
       - name: Show generated file status
         run: |
           echo "Generated file status:"
-          git status --short -- urls.txt domains.txt mappings.csv invalid.txt
+          git status --short -- urls.txt invalid.txt
 
           echo ""
           echo "Changes to already tracked files:"
-          git diff --stat -- urls.txt domains.txt mappings.csv invalid.txt
+          git diff --stat -- urls.txt invalid.txt
 
-      # Detect BOTH:
-      #   - changes to existing tracked files
-      #   - newly generated/untracked files
+      # Detect both changes to existing files and newly generated files
       - name: Check for changes
         id: changes
         run: |
-          if [ -z "$(git status --porcelain -- urls.txt domains.txt mappings.csv invalid.txt)" ]; then
+          if [ -z "$(git status --porcelain -- urls.txt invalid.txt)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No sanctions website changes detected."
           else
@@ -66,7 +61,7 @@ jobs:
             echo "Sanctions website changes detected."
 
             echo ""
-            git status --short -- urls.txt domains.txt mappings.csv invalid.txt
+            git status --short -- urls.txt invalid.txt
           fi
 
       - name: Commit updated lists
@@ -75,13 +70,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add urls.txt domains.txt mappings.csv invalid.txt
+          git add urls.txt invalid.txt
 
-          git commit -m "Update UK sanctions website lists"
+          git commit -m "Update UK sanctions website list"
 
           git push
 
       - name: No changes
         if: steps.changes.outputs.changed == 'false'
         run: |
-          echo "UK sanctions website lists are already up to date."
+          echo "UK sanctions website list is already up to date."
