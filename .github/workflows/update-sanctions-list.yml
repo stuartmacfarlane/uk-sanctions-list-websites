@@ -3,7 +3,7 @@ name: Update UK Sanctions Website List
 on:
   schedule:
     # Run every day at 04:17 UK time
-    - cron: "17 4 * * *"
+    - cron: "0 9 * * *"
       timezone: "Europe/London"
 
   # Allow manual execution from the Actions tab
