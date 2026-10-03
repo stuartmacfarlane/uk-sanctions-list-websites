@@ -185,7 +185,6 @@ http://www.ieimil.ir
 http://www.intgs.ru/index.html
 http://www.irancomposites.org
 http://www.itam.nsc.ru/
-http://www.izh-bs/ru
 http://www.izumrud-ao.ru
 http://www.kolmar.ru/en/
 http://www.ktrv.ru/
@@ -274,7 +273,8 @@ https://finance.ozon.ru
 https://fkptpz.ru/
 https://forabank.ru
 https://gelion.uz/
-https://glava-Inr.su/content/konstituciya|https://glava.lnr.info
+https://glava-Inr.su/content/konstituciya
+https://glava.lnr.info
 https://glshpg.com
 https://goznak.ru/en/
 https://grinex.io
@@ -318,7 +318,7 @@ https://niigrafit.ru/en/
 https://niiph.ru/
 https://novopressa.ru/
 https://novorussia-tv.ru/
-https://novorussia.su/official|https://novopressa.ru/|https://novorussia-tv.ru/|https://novorussia.today/|http://novorossiia.ru/|https://www.novorosinform.org./
+https://novorussia.su/official
 https://novorussia.today/
 https://npkprogress.ru/
 https://nppsalut.ru/
